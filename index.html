@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>API fun</title>
+
+    <style> 
+        body { 
+            background-color: antiquewhite;
+        }
+        button { 
+            padding: 10px; 
+            color: white;
+            background-color: black;
+            border-radius: 5px;
+
+        }
+
+        .content { 
+            margin: 10px 0; 
+        }
+
+        .key { 
+            text-transform: capitalize;
+            font-size: 1.5em;
+            color: rgb(223, 180, 123);
+        }
+
+        .val { 
+
+        }
+        #notes { 
+            width : 60%; 
+            margin: 20px; 
+
+        }
+        span { 
+            font-weight: 550;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>API fun</h1>
+    <!-- <button onclick = "displayprofile()"> Fetch my linkedin page</button> -->
+
+    <p id="result"></p>
+
+    <div id = "notes">
+        <span>API description</span>
+        <p>This API is a linkedin profile scrapper API. It takes in a link 
+            to a linkedin profile and returns all the content on that profile. 
+            It fetches a lot of data, but I display a few for a cleaner and 
+            clearer page. If you are curious to see all it gets, you can uncomment
+            line ---. 
+        </p>
+        <span id="web"> I found it on  
+            <a href="https://rapidapi.com/freshdata-freshdata-default/api/
+            fresh-linkedin-profile-data/playground/apiendpoint_be184032-
+            7e19-4f87-844b-752a4925be70">Rapid api</a>
+        </span>
+
+        <p id="params">
+            The major parameter to include for this API, is a link to the 
+            linkedin profile we want to scrape. After that, there are some 
+            optional parameters, like choosing to include one section of the 
+            profile or not. 
+        </p>
+        <p id="helpful">
+            I think this API would be helpful if we wanted to collect information
+            on the kind of people that worked at a company. This API could give 
+            us access to a lot of data,
+            that we might even be able to use to predict the kind of profiles that 
+            a job seeker might need to have to get hired at that company. 
+        </p>
+        
+
+        
+    </div>
+
+    <script>        
+
+
+
+        function displayprofile() { 
+            fetch('https://fresh-linkedin-profile-data.p.rapidapi.com/get-' + 
+            'linkedin-profile-by-salesnavurl?linkedin_url=https://www.linkedin.com/in/osinachi-atama/&include_skills=false&include_certifications=false&' +  
+            'include_publications=false&include_honors=false&include_volunteers=' + 
+            'false&include_projects=false&include_patents=false&include_courses=' + 
+            'false&include_organizations=false',
+                { 
+                    method: "GET", 
+                    headers: { 
+                        "x-rapidapi-key" : "4d9b51ffa3mshe7a39069f2b7743p182c88jsna21d2dcbd2bb",
+                        "x-rapidapi-host" :"fresh-linkedin-profile-data.p.rapidapi.com"
+                    }
+                })
+
+                .then(response => response.json())
+                    .then(data => { 
+                        const keys = Object.keys(data);
+                        first = keys[0]
+                        const keys_data = Object.keys(data.data)
+                        // console.log(keys[0])
+                        console.log(keys_data)
+                        // $('#result').text(JSON.stringify(data, null, 2));
+                        display_data(data, keys_data);
+                    })
+                    .catch(error=> console.error("Error: ", error))                    
+        };
+
+        function display_data(data, keys_arr) { 
+            const print_arr = ["about", "full_name", "linkedin_url", "school",
+             "city", "profile_id", 'job_title', 'follower_count', 'headline', 'company', 
+            'company_description']; // List of keys to display
+            keys_arr.forEach(key => { 
+                if (print_arr.includes(key)) { // Only process keys that are in print_arr
+                    console.log(data.data[key])
+                    var value = data.data[key]; // Get the value for the current key
+                    if (value == null){ 
+                        value = "None, this section was empty on the profile."
+                    }
+                    const span_key = $("<span class = 'key'>").text(`${key}: `)
+                    const span_val = $("<span class = 'val'>").text(value)
+                    const new_div = $("<div class = 'content'>").append(span_key).append(span_val) // Create a new div to display the key-value pair
+                    $('#result').append(new_div); // Append the new div to the result section
+                        }
+            });
+        }
+        
+
+          
+        
+    </script>
+    
+    
+</body>
+</html>
